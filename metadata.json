@@ -1,0 +1,7 @@
+{
+  "name": "Asistente de Cocina Inteligente",
+  "description": "Describe, fotografía o habla sobre los ingredientes de tu nevera y este asistente con IA identificará los ingredientes, sugerirá recetas con filtros, proporcionará instrucciones de cocina paso a paso con lectura en voz alta y gestionará una lista de compras para los artículos que falten.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
