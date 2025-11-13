@@ -1,10 +1,42 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Image, Type, Mic, Send, StopCircle, CheckCircle, Trash2 } from 'lucide-react';
+import ImageUploader from './ImageUploader';
 
 interface InputAreaProps {
   onSubmit: (data: { type: 'image' | 'audio' | 'text', data: File | Blob | string }) => void;
   disabled: boolean;
 }
+
+interface ModeButtonProps {
+  activeMode: 'image' | 'text' | 'audio';
+  targetMode: 'image' | 'text' | 'audio';
+  children: React.ReactNode;
+  onClick: () => void;
+}
+
+// FIX: Moved ModeButton outside of the InputArea component.
+// Defining a component inside another component's render function is an anti-pattern in React.
+// It causes the component to be re-created on every render, losing state and causing unpredictable bugs.
+const ModeButton: React.FC<ModeButtonProps> = ({
+  activeMode,
+  targetMode,
+  children,
+  onClick,
+}) => {
+  const isActive = activeMode === targetMode;
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 ${
+        isActive
+          ? 'bg-green-600 text-white shadow'
+          : 'bg-transparent text-gray-600 hover:bg-gray-200'
+      }`}
+    >
+      {children}
+    </button>
+  );
+};
 
 const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
   const [mode, setMode] = useState<'image' | 'text' | 'audio'>('image');
@@ -12,7 +44,6 @@ const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
   // Image State
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Text State
   const [textInput, setTextInput] = useState('');
@@ -43,8 +74,6 @@ const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
     }
   };
 
-  const triggerFileSelect = () => fileInputRef.current?.click();
-  
   const handleImageSubmit = () => {
     if (imageFile) onSubmit({ type: 'image', data: imageFile });
   };
@@ -95,20 +124,6 @@ const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     setAudioUrl(null);
   };
-  
-  const ModeButton = ({ activeMode, targetMode, children, onClick }) => {
-    const isActive = activeMode === targetMode;
-    return (
-        <button
-            onClick={onClick}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 ${
-                isActive ? 'bg-green-600 text-white shadow' : 'bg-transparent text-gray-600 hover:bg-gray-200'
-            }`}
-        >
-            {children}
-        </button>
-    );
-  }
 
   return (
     <div className="flex flex-col items-center justify-center h-full text-center">
@@ -120,28 +135,10 @@ const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
         
         <div className="w-full max-w-lg">
         {mode === 'image' && (
-             <div
-                className={`relative w-full border-2 border-dashed rounded-xl p-8 transition-colors duration-300 ${
-                imagePreview ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-green-400'
-                }`}
-            >
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" ref={fileInputRef} />
-                {imagePreview ? (
-                <div>
-                    <img src={imagePreview} alt="Vista previa" className="max-h-60 w-auto mx-auto rounded-lg shadow-md" />
-                    <div className="mt-4 flex items-center justify-center text-green-700">
-                        <CheckCircle className="h-5 w-5 mr-2" />
-                        <p className="font-medium">¡Imagen seleccionada!</p>
-                    </div>
-                </div>
-                ) : (
-                <div className="flex flex-col items-center text-gray-500 cursor-pointer" onClick={triggerFileSelect}>
-                    <Image className="h-16 w-16 mb-4 text-gray-400" />
-                    <h2 className="text-xl font-semibold text-gray-700">Fotografía tu Heladera</h2>
-                    <p>Haz clic para subir una foto de tus ingredientes.</p>
-                </div>
-                )}
-            </div>
+            <ImageUploader 
+              onFileChange={handleFileChange}
+              imagePreview={imagePreview}
+            />
         )}
         
         {mode === 'text' && (
