@@ -14,9 +14,6 @@ interface ModeButtonProps {
   onClick: () => void;
 }
 
-// FIX: Moved ModeButton outside of the InputArea component.
-// Defining a component inside another component's render function is an anti-pattern in React.
-// It causes the component to be re-created on every render, losing state and causing unpredictable bugs.
 const ModeButton: React.FC<ModeButtonProps> = ({
   activeMode,
   targetMode,
@@ -26,6 +23,7 @@ const ModeButton: React.FC<ModeButtonProps> = ({
   const isActive = activeMode === targetMode;
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 ${
         isActive
@@ -159,7 +157,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
                         <Mic className="h-16 w-16 mb-4 text-gray-400" />
                         <h2 className="text-xl font-semibold text-gray-700 mb-2">Describe tus ingredientes</h2>
                         <p className="text-gray-500 mb-6">Presiona el botón para empezar a grabar.</p>
-                        <button onClick={startRecording} disabled={disabled} className="px-6 py-3 bg-red-600 text-white font-bold rounded-full shadow-lg hover:bg-red-700 flex items-center gap-2">
+                        <button type="button" onClick={startRecording} disabled={disabled} className="px-6 py-3 bg-red-600 text-white font-bold rounded-full shadow-lg hover:bg-red-700 flex items-center gap-2">
                             <Mic size={20} /> Grabar
                         </button>
                     </>
@@ -171,7 +169,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
                             <Mic className="relative h-16 w-16 p-3 text-white" />
                         </div>
                         <h2 className="text-xl font-semibold text-gray-700 mb-6">Grabando...</h2>
-                        <button onClick={stopRecording} className="px-6 py-3 bg-gray-700 text-white font-bold rounded-full shadow-lg hover:bg-gray-800 flex items-center gap-2">
+                        <button type="button" onClick={stopRecording} className="px-6 py-3 bg-gray-700 text-white font-bold rounded-full shadow-lg hover:bg-gray-800 flex items-center gap-2">
                              <StopCircle size={20} /> Detener
                         </button>
                     </>
@@ -182,7 +180,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
                          <h2 className="text-xl font-semibold text-gray-700 mb-4">¡Grabación Lista!</h2>
                         <audio src={audioUrl} controls className="w-full mb-4"/>
                         <div className="flex gap-4">
-                            <button onClick={resetAudio} className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-full hover:bg-gray-300 flex items-center gap-2"><Trash2 size={16}/> Descartar</button>
+                            <button type="button" onClick={resetAudio} className="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-full hover:bg-gray-300 flex items-center gap-2"><Trash2 size={16}/> Descartar</button>
                         </div>
                     </div>
                 )}
@@ -191,9 +189,9 @@ const InputArea: React.FC<InputAreaProps> = ({ onSubmit, disabled }) => {
         </div>
 
         <div className="mt-8">
-            {mode === 'image' && <button onClick={handleImageSubmit} disabled={!imageFile || disabled} className="px-8 py-4 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100 flex items-center gap-3"><Image size={20}/> Buscar Recetas con Imagen</button>}
-            {mode === 'text' && <button onClick={handleTextSubmit} disabled={!textInput.trim() || disabled} className="px-8 py-4 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100 flex items-center gap-3"><Send size={20}/> Buscar Recetas con Texto</button>}
-            {mode === 'audio' && <button onClick={handleAudioSubmit} disabled={!audioBlob || disabled} className="px-8 py-4 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100 flex items-center gap-3"><Send size={20}/> Buscar Recetas con Voz</button>}
+            {mode === 'image' && <button type="button" onClick={handleImageSubmit} disabled={!imageFile || disabled} className="px-8 py-4 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100 flex items-center gap-3"><Image size={20}/> Buscar Recetas con Imagen</button>}
+            {mode === 'text' && <button type="button" onClick={handleTextSubmit} disabled={!textInput.trim() || disabled} className="px-8 py-4 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100 flex items-center gap-3"><Send size={20}/> Buscar Recetas con Texto</button>}
+            {mode === 'audio' && <button type="button" onClick={handleAudioSubmit} disabled={!audioBlob || disabled} className="px-8 py-4 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100 flex items-center gap-3"><Send size={20}/> Buscar Recetas con Voz</button>}
         </div>
 
     </div>
